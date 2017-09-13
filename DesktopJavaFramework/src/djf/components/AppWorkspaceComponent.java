@@ -38,7 +38,9 @@ public abstract class AppWorkspaceComponent {
         if (!workspaceActivated) {
             // PUT THE WORKSPACE IN THE GUI
             appPane.setCenter(workspace);
-            workspaceActivated = true;
+           //workspace.prefHeightProperty().bind(appPane.heightProperty());
+           //workspace.prefWidthProperty().bind(appPane.widthProperty());
+           workspaceActivated = true;
         }
     }
     

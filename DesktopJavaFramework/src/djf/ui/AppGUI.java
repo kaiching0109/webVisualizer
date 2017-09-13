@@ -167,7 +167,7 @@ public class AppGUI {
      * the application window. These are related to file management.
      */
     private void initTopToolbar(AppTemplate app) {
-        fileToolbar = new FlowPane();
+        //fileToolbar = new FlowPane(10, 0);
 
         // HERE ARE OUR FILE TOOLBAR BUTTONS, NOTE THAT SOME WILL
         // START AS ENABLED (false), WHILE OTHERS DISABLED (true)
@@ -219,8 +219,7 @@ public class AppGUI {
         // THE USER STARTS EDITING A COURSE
         appPane = new BorderPane();
         appPane.setTop(topToolbarPane);
-        primaryScene = new Scene(appPane);
-        
+        primaryScene = new Scene(appPane);   
         // SET THE APP ICON
 	PropertiesManager props = PropertiesManager.getPropertiesManager();
         String appIcon = FILE_PROTOCOL + PATH_IMAGES + props.getProperty(APP_LOGO);

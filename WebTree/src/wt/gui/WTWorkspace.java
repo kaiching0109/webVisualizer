@@ -153,8 +153,8 @@ public class WTWorkspace extends AppWorkspaceComponent {
 	tagButtons = new ArrayList<>();
 	tags = new HashMap<>();
         editHBox = new HBox();
-        editVBox1 = new VBox(9.5);
-        editVBox2 = new VBox(11.1);
+        editVBox1 = new VBox();
+        editVBox2 = new VBox();
 
 	// FIRST THE REMOVE BUTTON
         AppGUI gui = app.getGUI();
@@ -210,8 +210,8 @@ public class WTWorkspace extends AppWorkspaceComponent {
 	tagPropertyTextFields = new ArrayList<>();
 
 	// PUT THEM IN THE LEFT
-	leftPane.setLeft(tagToolbarScrollPane);
-	leftPane.setCenter(treeScrollPane);
+	leftPane.setLeft(tagToolbarScrollPane); //buttons area
+	leftPane.setCenter(treeScrollPane); //tree area
 	leftPane.setBottom(tagEditorScrollPane);
 
 	// NOW FOR THE RIGHT
@@ -235,14 +235,19 @@ public class WTWorkspace extends AppWorkspaceComponent {
 	rightPane.getTabs().add(cssTab);
 
 	// AND NOW PUT IT IN THE WORKSPACE
-	workspaceSplitPane = new SplitPane();
+	workspaceSplitPane = new SplitPane();   
 	workspaceSplitPane.getItems().add(leftPane);
 	workspaceSplitPane.getItems().add(rightPane);
+        //leftPane.prefHeightProperty().bind(workspaceSplitPane.heightProperty());
+       //leftPane.prefWidthProperty().bind(workspaceSplitPane.widthProperty().multiply(0.2));
+       //rightPane.prefHeightProperty().bind(workspaceSplitPane.heightProperty());
+     //  rightPane.prefWidthProperty().bind(workspaceSplitPane.widthProperty().multiply(0.2));
 
 	// AND FINALLY, LET'S MAKE THE SPLIT PANE THE WORKSPACE
 	workspace = new Pane();
 	workspace.getChildren().add(workspaceSplitPane);
-
+        workspaceSplitPane.prefHeightProperty().bind(workspace.heightProperty());
+        workspaceSplitPane.prefWidthProperty().bind(workspace.widthProperty());
         // NOTE THAT WE HAVE NOT PUT THE WORKSPACE INTO THE WINDOW,
 	// THAT WILL BE DONE WHEN THE USER EITHER CREATES A NEW
 	// COURSE OR LOADS AN EXISTING ONE FOR EDITING
