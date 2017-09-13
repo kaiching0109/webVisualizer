@@ -11,17 +11,17 @@
 
 /* CSS CLASS FOR PAGE EDITING BUTTONS */
 .tag_button {
-    -fx-background-color: 
-        linear-gradient(#ffd65b, #e68400),
-        linear-gradient(#ffef84, #f2ba44),
-        linear-gradient(#ffea6a, #efaa22),
-        linear-gradient(#ffe657 0%, #f8c202 50%, #eea10b 100%),
+    -fx-background-color:  #11D0A5;
+       /*  linear-gradient(#ffef84, #f2ba44),
+        //linear-gradient(#ffea6a, #efaa22),
+        //linear-gradient(#ffe657 0%, #f8c202 50%, #eea10b 100%),
         linear-gradient(from 0% 0% to 15% 50%, rgba(255,255,255,0.9), rgba(255,255,255,0));
+      */
     -fx-background-radius: 30;
     -fx-background-insets: 0,1,2,3,0;
-    -fx-text-fill: #654b00;
+    -fx-text-fill: #def2ee;
     -fx-font-weight: bold;
-    -fx-font-size: 14px;
+    -fx-font-size: 10px;
     -fx-padding: 10 20 10 20;
 }
 
@@ -29,17 +29,17 @@
 .max_pane {
     -fx-fit-to-height: true;
     -fx-fit-to-width: true;
-    -fx-background-color:#ccccff;
+    -fx-background-color: #7151B0;
 }
 
 /* CSS CLASS FOR OUR BIG PANES */
 .bordered_pane {
-    -fx-background-color: #aaaaff;
-    -fx-background-radius: 5.0;
+    -fx-background-color: #7151B0;
+    -fx-background-radius: 1.0;
     -fx-padding: 15;
     -fx-spacing: 10;
     -fx-border-width: 2px;
-    -fx-border-color: #7777dd;
+    -fx-border-color: #57339C;
 }
 
 /* CSS CLASS FOR LABELS HEADING LARGE SECTIONS IN THE GUI */

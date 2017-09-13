@@ -68,7 +68,8 @@ public class WTWorkspace extends AppWorkspaceComponent {
     static final String CLASS_TAG_BUTTON = "tag_button";
     static final String EMPTY_TEXT = "";
     static final int BUTTON_TAG_WIDTH = 75;
-
+    static final int BUTTON_TAG_HEIGHT = 5;
+    
     // HERE'S THE APP
     private final AppTemplate app;
 
@@ -152,8 +153,8 @@ public class WTWorkspace extends AppWorkspaceComponent {
 	tagButtons = new ArrayList<>();
 	tags = new HashMap<>();
         editHBox = new HBox();
-        editVBox1 = new VBox();
-        editVBox2 = new VBox();
+        editVBox1 = new VBox(9.5);
+        editVBox2 = new VBox(11.1);
 
 	// FIRST THE REMOVE BUTTON
         AppGUI gui = app.getGUI();
@@ -161,6 +162,9 @@ public class WTWorkspace extends AppWorkspaceComponent {
 	removeButton.setMaxWidth(BUTTON_TAG_WIDTH);
 	removeButton.setMinWidth(BUTTON_TAG_WIDTH);
 	removeButton.setPrefWidth(BUTTON_TAG_WIDTH);
+        removeButton.setMaxHeight(BUTTON_TAG_HEIGHT);
+        removeButton.setMinWidth(BUTTON_TAG_HEIGHT);
+        removeButton.setPrefHeight(BUTTON_TAG_HEIGHT);
 
 	// LOAD ALL THE HTML TAG TYPES
 	WTFiles fileManager = (WTFiles) app.getFileComponent();
