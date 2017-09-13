@@ -5,7 +5,6 @@
 	{ "tag": "div",	    "attributes": ["class", "id"],  "has_closing_tag": "true",	"legal_parents": ["body", "div"]	},
 	{ "tag": "h1",		"attributes": ["class", "id"],	"has_closing_tag": "true", "legal_parents": ["a", "body", "div", "td", "title"]	},
 	{ "tag": "h2",		"attributes": ["class", "id"],	"has_closing_tag": "true", "legal_parents": ["a", "body", "div", "td", "title"]	},
-	{ "tag": "h2",		"attributes": ["class", "id"],	"has_closing_tag": "true", "legal_parents": ["a", "body", "div", "td", "title"]	},
 	{ "tag": "h3",		"attributes": ["class", "id"],	"has_closing_tag": "true", "legal_parents": ["a", "body", "div", "td", "title"]	},
 	{ "tag": "h4",		"attributes": ["class", "id"],	"has_closing_tag": "true", "legal_parents": ["a", "body", "div", "td", "title"]	},
 	{ "tag": "h5",		"attributes": ["class", "id"],	"has_closing_tag": "true", "legal_parents": ["a", "body", "div", "td", "title"]	},

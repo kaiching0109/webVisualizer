@@ -88,7 +88,7 @@ public abstract class AppTemplate extends Application {
 	    // LOAD APP PROPERTIES, BOTH THE BASIC UI STUFF FOR THE FRAMEWORK
 	    // AND THE CUSTOM UI STUFF FOR THE WORKSPACE
 	    boolean success = loadProperties(APP_PROPERTIES_FILE_NAME);
-	    
+
 	    if (success) {
                 // GET THE TITLE FROM THE XML FILE
 		String appTitle = props.getProperty(APP_TITLE);
@@ -104,6 +104,7 @@ public abstract class AppTemplate extends Application {
                 // NOW OPEN UP THE WINDOW
                 primaryStage.show();
 	    } 
+            //
 	}catch (Exception e) {
             AppMessageDialogSingleton dialog = AppMessageDialogSingleton.getSingleton();
             dialog.show(props.getProperty(PROPERTIES_LOAD_ERROR_TITLE), props.getProperty(PROPERTIES_LOAD_ERROR_MESSAGE));

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import javafx.geometry.Orientation;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -28,6 +29,7 @@ import javafx.scene.control.TreeView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.web.WebEngine;
@@ -100,7 +102,9 @@ public class WTWorkspace extends AppWorkspaceComponent {
     private ArrayList<TextField> tagPropertyTextFields;
 
     // THIS WILL CONTAIN BOTH THE TREE AND THE TREE EDITOR
-    private VBox editVBox;
+    private VBox editVBox1;
+    private VBox editVBox2;
+    private HBox editHBox;
 
     // THIS IS WHERE WE CAN VIEW THE WEB PAGE OR DIRECTLY EDIT THE CSS
     private TabPane rightPane;
@@ -142,15 +146,18 @@ public class WTWorkspace extends AppWorkspaceComponent {
 	leftPane = new BorderPane();
 
 	// THIS IS THE TOP TOOLBAR
-	tagToolbar = new FlowPane(Orientation.VERTICAL);
+        tagToolbar = new FlowPane(Orientation.VERTICAL);
 	tagToolbarScrollPane = new ScrollPane(tagToolbar);
 	tagToolbarScrollPane.setFitToHeight(true);
 	tagButtons = new ArrayList<>();
 	tags = new HashMap<>();
+        editHBox = new HBox();
+        editVBox1 = new VBox();
+        editVBox2 = new VBox();
 
 	// FIRST THE REMOVE BUTTON
         AppGUI gui = app.getGUI();
-	removeButton = gui.initChildButton(tagToolbar, LanguageProperty.REMOVE_ELEMENT_ICON.toString(), LanguageProperty.REMOVE_ELEMENT_TOOLTIP.toString(), true);
+	removeButton = gui.initChildButton(editVBox1, LanguageProperty.REMOVE_ELEMENT_ICON.toString(), LanguageProperty.REMOVE_ELEMENT_TOOLTIP.toString(), true);
 	removeButton.setMaxWidth(BUTTON_TAG_WIDTH);
 	removeButton.setMinWidth(BUTTON_TAG_WIDTH);
 	removeButton.setPrefWidth(BUTTON_TAG_WIDTH);
@@ -169,19 +176,28 @@ public class WTWorkspace extends AppWorkspaceComponent {
 	htmlTree.setRoot(htmlRoot);
 	dataManager.setHTMLRoot(htmlRoot);
 	dataManager.resetData();
-
+        
+        int counter = 0;
+        //tagToolbar.getChildren().add(hBox);
+        
 	// AND NOW USE THE LOADED TAG TYPES TO ADD BUTTONS
 	for (HTMLTagPrototype tag : dataManager.getTags()) {
 	    // MAKE THE BUTTON
+            counter++;
 	    Button tagButton = new Button(tag.getTagName());
-	    tagButton.setDisable(true);
+	    tagButton.setDisable(true);   
 	    tagButtons.add(tagButton);
 	    tagButton.setMaxWidth(BUTTON_TAG_WIDTH);
 	    tagButton.setMinWidth(BUTTON_TAG_WIDTH);
-	    tagButton.setPrefWidth(BUTTON_TAG_WIDTH);
-	    tagToolbar.getChildren().add(tagButton);
-	}
-
+	    tagButton.setPrefWidth(BUTTON_TAG_WIDTH); 
+            if(counter < 11)
+                editVBox1.getChildren().add(tagButton);
+            else    
+                editVBox2.getChildren().add(tagButton); 
+	   // tagToolbar.getChildren().add(tagButton);          
+	}   
+        editHBox.getChildren().addAll(editVBox1, editVBox2);
+        tagToolbar.getChildren().add(editHBox);
 	// AND NOW THE REGION FOR EDITING TAG PROPERTIES
 	tagEditorPane = new GridPane();
 	tagEditorScrollPane = new ScrollPane(tagEditorPane);
@@ -260,8 +276,20 @@ public class WTWorkspace extends AppWorkspaceComponent {
 	});
 
         // WE KNOW WE ONLY PUT BUTTONS IN THIS TOOLBAR
-        for (int i = 0; i < tagToolbar.getChildren().size(); i++) {
-            Button tagButton = (Button)tagToolbar.getChildren().get(i);
+      
+        for (int i = 0; i < editVBox1.getChildren().size(); i++) {
+            Button tagButton = (Button)editVBox1.getChildren().get(i);
+            WTData data = (WTData)app.getDataComponent();
+	    // INIT ITS EVENT HANDLER
+	    tagButton.setOnAction(e -> {
+		String tagName = tagButton.getText();
+		HTMLTagPrototype clickedTag = data.getTag(tagName);
+		pageEditController.handleAddElementRequest(clickedTag);
+	    });
+        }
+        
+         for (int i = 0; i < editVBox2.getChildren().size(); i++) {
+            Button tagButton = (Button)editVBox2.getChildren().get(i);
             WTData data = (WTData)app.getDataComponent();
 	    // INIT ITS EVENT HANDLER
 	    tagButton.setOnAction(e -> {
@@ -358,7 +386,7 @@ public class WTWorkspace extends AppWorkspaceComponent {
 	    tagEditorPane.getChildren().clear();
 
 	    // FIRST ADD THE LABEL
-	    tagEditorPane.add(tagEditorLabel, 0, 0, 2, 1);
+	   tagEditorPane.add(tagEditorLabel, 0, 3, 2, 1);
 
 	    // THEN LOAD IN ALL THE NEW STUFF
 	    TreeItem<HTMLTagPrototype> selectedItem = htmlTree.getSelectionModel().getSelectedItem();
