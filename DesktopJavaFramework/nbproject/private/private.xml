@@ -5,6 +5,9 @@
         <group>
             <file>file:/Users/aaronsuen/NetBeansProjects/Metro_Map_Maker_App/DesktopJavaFramework/src/djf/AppTemplate.java</file>
             <file>file:/Users/aaronsuen/NetBeansProjects/Metro_Map_Maker_App/DesktopJavaFramework/src/djf/ui/AppGUI.java</file>
+            <file>file:/Users/aaronsuen/NetBeansProjects/Metro_Map_Maker_App/DesktopJavaFramework/src/djf/settings/AppStartupConstants.java</file>
+            <file>file:/Users/aaronsuen/NetBeansProjects/Metro_Map_Maker_App/DesktopJavaFramework/src/djf/controller/AppFileController.java</file>
+            <file>file:/Users/aaronsuen/NetBeansProjects/Metro_Map_Maker_App/DesktopJavaFramework/src/djf/settings/AppPropertyType.java</file>
         </group>
     </open-files>
 </project-private>

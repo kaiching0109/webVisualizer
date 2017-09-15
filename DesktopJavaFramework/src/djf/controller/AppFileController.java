@@ -226,6 +226,18 @@ public class AppFileController {
                 dialog.show(props.getProperty(SAVE_ERROR_TITLE), props.getProperty(SAVE_ERROR_MESSAGE));
         }
     }
+    
+    public void handleCutRequest() {   
+        System.out.println("Cut");
+    }
+    
+    public void hanldeCopyRequest() {
+        System.out.println("Copy");
+    }
+    
+    public void handlePasteRequest() {
+        System.out.println("Paste");  
+    }
 
     /**
      * This helper method verifies that the user really wants to save their
@@ -320,6 +332,8 @@ public class AppFileController {
                 
 		// MAKE SURE THE WORKSPACE IS ACTIVATED
 		app.getWorkspaceComponent().activateWorkspace(app.getGUI().getAppPane());
+                
+                app.getWorkspaceComponent().reloadWorkspace(app.getDataComponent());
                 
                 // AND MAKE SURE THE FILE BUTTONS ARE PROPERLY ENABLED
                 saved = true;

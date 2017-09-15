@@ -53,6 +53,9 @@ public class AppGUI {
     protected Button loadButton;
     protected Button saveButton;
     protected Button exitButton;
+    protected Button copyButton;
+    protected Button cutButton;
+    protected Button pasteButton;
     
     // THIS DIALOG IS USED FOR GIVING FEEDBACK TO THE USER
     protected AppYesNoCancelDialogSingleton yesNoCancelDialog;
@@ -153,6 +156,9 @@ public class AppGUI {
 	newButton.setDisable(false);
         loadButton.setDisable(false);
 	exitButton.setDisable(false);
+        cutButton.setDisable(false);
+        copyButton.setDisable(false);
+        pasteButton.setDisable(false);
 
         // NOTE THAT THE NEW, LOAD, AND EXIT BUTTONS
         // ARE NEVER DISABLED SO WE NEVER HAVE TO TOUCH THEM
@@ -167,7 +173,7 @@ public class AppGUI {
      * the application window. These are related to file management.
      */
     private void initTopToolbar(AppTemplate app) {
-        //fileToolbar = new FlowPane(10, 0);
+        fileToolbar = new FlowPane(10, 0);
 
         // HERE ARE OUR FILE TOOLBAR BUTTONS, NOTE THAT SOME WILL
         // START AS ENABLED (false), WHILE OTHERS DISABLED (true)
@@ -175,7 +181,10 @@ public class AppGUI {
         loadButton = initChildButton(fileToolbar,	LOAD_ICON.toString(),	    LOAD_TOOLTIP.toString(),	false);
         saveButton = initChildButton(fileToolbar,	SAVE_ICON.toString(),	    SAVE_TOOLTIP.toString(),	true);
         exitButton = initChildButton(fileToolbar,	EXIT_ICON.toString(),	    EXIT_TOOLTIP.toString(),	false);
-
+        cutButton = initChildButton(fileToolbar,        CUT_ICON.toString(),        CUT_TOOLTIP.toString(),     false);
+        copyButton = initChildButton(fileToolbar,       COPY_ICON.toString(),       COPY_TOOLTIP.toString(),    false);
+        pasteButton = initChildButton(fileToolbar,      PASTE_ICON.toString(),      PASTE_TOOLTIP.toString(),   false);
+        
 	// AND NOW SETUP THEIR EVENT HANDLERS
         fileController = new AppFileController(app);
         newButton.setOnAction(e -> {
@@ -190,6 +199,15 @@ public class AppGUI {
         exitButton.setOnAction(e -> {
             fileController.handleExitRequest();
         });	
+        cutButton.setOnAction(e -> {
+            fileController.handleCutRequest();
+        });
+        copyButton.setOnAction(e -> {
+            fileController.hanldeCopyRequest();
+        });
+        pasteButton.setOnAction(e -> {
+            fileController.handlePasteRequest();
+        });
         
         // NOW PUT THE FILE TOOLBAR IN THE TOP TOOLBAR, WHICH COULD
         // ALSO STORE OTHER TOOLBARS
@@ -246,7 +264,7 @@ public class AppGUI {
      */
     public Button initChildButton(Pane toolbar, String icon, String tooltip, boolean disabled) {
         PropertiesManager props = PropertiesManager.getPropertiesManager();
-	
+        
 	// LOAD THE ICON FROM THE PROVIDED FILE
         String imagePath = FILE_PROTOCOL + PATH_IMAGES + props.getProperty(icon);
         Image buttonImage = new Image(imagePath);
@@ -306,5 +324,9 @@ public class AppGUI {
 	loadButton.getStyleClass().add(CLASS_FILE_BUTTON);
 	saveButton.getStyleClass().add(CLASS_FILE_BUTTON);
 	exitButton.getStyleClass().add(CLASS_FILE_BUTTON);
+        cutButton.getStyleClass().add(CLASS_FILE_BUTTON);
+        copyButton.getStyleClass().add(CLASS_FILE_BUTTON);
+        pasteButton.getStyleClass().add(CLASS_FILE_BUTTON);
+        
     }
 }
