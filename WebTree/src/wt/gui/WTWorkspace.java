@@ -238,10 +238,6 @@ public class WTWorkspace extends AppWorkspaceComponent {
 	workspaceSplitPane = new SplitPane();   
 	workspaceSplitPane.getItems().add(leftPane);
 	workspaceSplitPane.getItems().add(rightPane);
-        //leftPane.prefHeightProperty().bind(workspaceSplitPane.heightProperty());
-       //leftPane.prefWidthProperty().bind(workspaceSplitPane.widthProperty().multiply(0.2));
-       //rightPane.prefHeightProperty().bind(workspaceSplitPane.heightProperty());
-     //  rightPane.prefWidthProperty().bind(workspaceSplitPane.widthProperty().multiply(0.2));
 
 	// AND FINALLY, LET'S MAKE THE SPLIT PANE THE WORKSPACE
 	workspace = new Pane();

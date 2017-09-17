@@ -10,6 +10,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.FileChooser.ExtensionFilter;
 import properties_manager.PropertiesManager;
 import djf.AppTemplate;
+import djf.components.AppWorkspaceComponent;
 import static djf.settings.AppPropertyType.LOAD_ERROR_MESSAGE;
 import static djf.settings.AppPropertyType.LOAD_ERROR_TITLE;
 import static djf.settings.AppPropertyType.LOAD_WORK_TITLE;
@@ -27,7 +28,26 @@ import static djf.settings.AppPropertyType.SAVE_UNSAVED_WORK_MESSAGE;
 import static djf.settings.AppPropertyType.SAVE_UNSAVED_WORK_TITLE;
 import static djf.settings.AppPropertyType.SAVE_WORK_TITLE;
 import static djf.settings.AppStartupConstants.PATH_WORK;
-
+import static djf.settings.AppStartupConstants.PROPERTIES_SCHEMA_FILE_NAME;
+import java.util.ArrayList;
+import javafx.scene.control.Button;
+import javafx.scene.control.TreeView;
+import javafx.scene.control.TreeItem;
+import static wt.LanguageProperty.ILLEGAL_NODE_REMOVAL_ERROR_MESSAGE;
+import static wt.LanguageProperty.ILLEGAL_NODE_REMOVAL_ERROR_TITLE;
+import static wt.LanguageProperty.ILLEGAL_NODE_CUT_ERROR_TITLE;
+import static wt.LanguageProperty.ILLEGAL_NODE_CUT_ERROR_MESSAGE;
+import static wt.LanguageProperty.ILLEGAL_NODE_COPY_ERROR_TITLE;
+import static wt.LanguageProperty.ILLEGAL_NODE_COPY_ERROR_MESSAGE;
+import wt.gui.WTWorkspace;
+import wt.data.HTMLTagPrototype;
+import static wt.data.HTMLTagPrototype.TAG_BODY;
+import static wt.data.HTMLTagPrototype.TAG_HEAD;
+import static wt.data.HTMLTagPrototype.TAG_HTML;
+import static wt.data.HTMLTagPrototype.TAG_LINK;
+import static wt.data.HTMLTagPrototype.TAG_TITLE;
+import wt.data.WTData;
+import wt.gui.WTWorkspace;
 /**
  * This class provides the event programmed responses for the file controls
  * that are provided by this framework.
@@ -44,6 +64,9 @@ public class AppFileController {
     
     // THIS IS THE FILE FOR THE WORK CURRENTLY BEING WORKED ON
     File currentWorkFile;
+    
+    // THIS IS A TEMP VARIABLE TO STORE TAGS FOR USER COPYING/CUTTING ITEMS
+    ArrayList<HTMLTagPrototype> temp_tagsList;
 
     /**
      * This constructor just keeps the app for later.
@@ -228,7 +251,42 @@ public class AppFileController {
     }
     
     public void handleCutRequest() {   
-        System.out.println("Cut");
+        WTWorkspace workspace = (WTWorkspace) app.getWorkspaceComponent();
+        PropertiesManager props = PropertiesManager.getPropertiesManager();
+        
+        // GET THE TREE TO SEE WHICH NODE IS CURRENTLY SELECTED
+        TreeView<HTMLTagPrototype> tree = workspace.getHTMLTree();
+        TreeItem<HTMLTagPrototype> selectedItem = tree.getSelectionModel().getSelectedItem();
+        String tagName = selectedItem.getValue().getTagName();
+        
+        // CHECK IF SELECTED ITEM EXISTED AND IT'S NOT HEAD/TITLE/LINK/BODY
+        if (selectedItem != null)  
+            if (tagName.equals(TAG_HTML)
+		    || tagName.equals(TAG_HEAD)
+		    || tagName.equals(TAG_TITLE)
+		    || tagName.equals(TAG_LINK)
+		    || tagName.equals(TAG_BODY)) {
+                AppMessageDialogSingleton dialog = AppMessageDialogSingleton.getSingleton();
+		dialog.show(props.getProperty(ILLEGAL_NODE_CUT_ERROR_TITLE), props.getProperty(ILLEGAL_NODE_CUT_ERROR_MESSAGE));
+            } else {
+                temp_tagsList = new ArrayList<HTMLTagPrototype>();
+                temp_tagsList.add(selectedItem.getValue());
+                
+                for (int i = 0; i < selectedItem.getChildren().size(); i++) {
+                   HTMLTagPrototype tagChildren = (HTMLTagPrototype)selectedItem.getChildren().get(i).getValue();
+                   temp_tagsList.add(tagChildren);
+                } //endFor
+                
+                TreeItem<HTMLTagPrototype> parentNode = selectedItem.getParent();
+
+		parentNode.getChildren().remove(selectedItem);
+		tree.getSelectionModel().select(parentNode);  
+                
+                // FORCE A RELOAD OF TAG EDITOR
+                AppDataComponent data = app.getDataComponent();
+		workspace.reloadWorkspace(data);
+                workspace.refreshTagButtons();
+            } //endElse    
     }
     
     public void hanldeCopyRequest() {
@@ -237,6 +295,9 @@ public class AppFileController {
     
     public void handlePasteRequest() {
         System.out.println("Paste");  
+         // MAKE A NEW HTMLTagPrototype AND PUT IT IN A NODE
+	    //HTMLTagPrototype newTag = element.clone();
+	    //TreeItem<HTMLTagPrototype> newNode = new TreeItem<>(newTag);
     }
 
     /**

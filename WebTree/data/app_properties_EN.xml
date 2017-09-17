@@ -82,7 +82,11 @@
 	<property name="REMOVE_ELEMENT_ERROR_MESSAGE"	    value="WARNING: An error occured removing the element."></property>
 	<property name="REMOVE_ELEMENT_ERROR_TITLE"	    value="Remove Element Error"></property>
 	<property name="ILLEGAL_NODE_REMOVAL_ERROR_MESSAGE" value="WARNING: That element cannot be removed."></property>
-	<property name="ILLEGAL_NODE_REMOVAL_ERROR_TITLE"   value="Illegal Node Removal Error"></property>
+   <property name="ILLEGAL_NODE_REMOVAL_ERROR_TITLE" value="Illegal Node Removal Error"></property>
+    <property name="ILLEGAL_NODE_CUT_ERROR_MESSAGE" value="WARNING: That element cannot be cut"></property>
+	<property name="ILLEGAL_NODE_CUT_ERROR_TITLE"   value="Illegal Node Cut Error"></property>
+    <property name="ILLEGAL_NODE_COPY_ERROR_MESSAGE" value="WARNING: That element cannot be copied"></property>
+    <property name="ILLEGAL_NODE_COPY_ERROR_TITLE"   value="Illegal Node Copied Error"></property>
 	<property name="TEMP_PAGE_LOAD_ERROR_MESSAGE"	    value="WARNING: An error occured loading the starting temp page."></property>
 	<property name="TEMP_PAGE_LOAD_ERROR_TITLE"	    value="Temp Page Loading Error"></property>
 	<property name="CSS_EXPORT_ERROR_MESSAGE"	    value="WARNING: An error occured exporting the CSS file."></property>
