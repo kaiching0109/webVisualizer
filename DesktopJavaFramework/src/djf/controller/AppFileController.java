@@ -41,6 +41,8 @@ import static wt.LanguageProperty.ILLEGAL_NODE_CUT_ERROR_TITLE;
 import static wt.LanguageProperty.ILLEGAL_NODE_CUT_ERROR_MESSAGE;
 import static wt.LanguageProperty.ILLEGAL_NODE_COPY_ERROR_TITLE;
 import static wt.LanguageProperty.ILLEGAL_NODE_COPY_ERROR_MESSAGE;
+import static wt.LanguageProperty.ILLEGAL_NODE_PASTE_ERROR_TITLE;
+import static wt.LanguageProperty.ILLEGAL_NODE_PASTE_ERROR_MESSAGE;
 import wt.gui.WTWorkspace;
 import wt.data.HTMLTagPrototype;
 import static wt.data.HTMLTagPrototype.TAG_BODY;
@@ -71,6 +73,7 @@ public class AppFileController {
     
     // THIS IS A TEMP VARIABLE TO STORE TAGS FOR USER COPYING/CUTTING ITEMS
     ArrayList<HTMLTagPrototype> temp_tagsList;
+    TreeItem<HTMLTagPrototype> tempTreeItem;
 
     /**
      * This constructor just keeps the app for later.
@@ -273,14 +276,9 @@ public class AppFileController {
                 AppMessageDialogSingleton dialog = AppMessageDialogSingleton.getSingleton();
 		dialog.show(props.getProperty(ILLEGAL_NODE_CUT_ERROR_TITLE), props.getProperty(ILLEGAL_NODE_CUT_ERROR_MESSAGE));
             } else {
-                temp_tagsList = new ArrayList<HTMLTagPrototype>();
-                temp_tagsList.add(selectedItem.getValue());
-                
-                for (int i = 0; i < selectedItem.getChildren().size(); i++) {
-                   HTMLTagPrototype tagChildren = (HTMLTagPrototype)selectedItem.getChildren().get(i).getValue();
-                   temp_tagsList.add(tagChildren);
-                } //endFor
-                
+                tempTreeItem = new TreeItem<HTMLTagPrototype>();
+                tempTreeItem = clone(selectedItem);
+
                 TreeItem<HTMLTagPrototype> parentNode = selectedItem.getParent();
 
 		parentNode.getChildren().remove(selectedItem);
@@ -295,13 +293,13 @@ public class AppFileController {
     }
     
     public void hanldeCopyRequest() {
-        WTWorkspace workspace = (WTWorkspace) app.getWorkspaceComponent();
+            WTWorkspace workspace = (WTWorkspace) app.getWorkspaceComponent();
         PropertiesManager props = PropertiesManager.getPropertiesManager();
         
         // GET THE TREE TO SEE WHICH NODE IS CURRENTLY SELECTED
         TreeView<HTMLTagPrototype> tree = workspace.getHTMLTree();
         TreeItem<HTMLTagPrototype> selectedItem = tree.getSelectionModel().getSelectedItem();
-       
+        
         // CHECK IF SELECTED ITEM EXISTED AND IT'S NOT HEAD/TITLE/LINK/BODY
         if (selectedItem != null){ 
             String tagName = selectedItem.getValue().getTagName();
@@ -311,22 +309,17 @@ public class AppFileController {
 		    || tagName.equals(TAG_LINK)
 		    || tagName.equals(TAG_BODY)) {
                 AppMessageDialogSingleton dialog = AppMessageDialogSingleton.getSingleton();
-		dialog.show(props.getProperty(ILLEGAL_NODE_CUT_ERROR_TITLE), props.getProperty(ILLEGAL_NODE_CUT_ERROR_MESSAGE));
+		dialog.show(props.getProperty(ILLEGAL_NODE_COPY_ERROR_TITLE), props.getProperty(ILLEGAL_NODE_COPY_ERROR_MESSAGE));
             } else {
-                temp_tagsList = new ArrayList<HTMLTagPrototype>();
-                temp_tagsList.add(selectedItem.getValue());
-                
-                for (int i = 0; i < selectedItem.getChildren().size(); i++) {
-                   HTMLTagPrototype tagChildren = (HTMLTagPrototype)selectedItem.getChildren().get(i).getValue();
-                   temp_tagsList.add(tagChildren);
-                } //endFor
+                tempTreeItem = new TreeItem<HTMLTagPrototype>();
+                tempTreeItem = clone(selectedItem);
             } //endElse 
-        } //endIf
+        } //endIf    
     }
     
     public void handlePasteRequest() {
         
-        if(temp_tagsList != null){
+        if(tempTreeItem != null){
             WTWorkspace workspace = (WTWorkspace) app.getWorkspaceComponent();
             PropertiesManager props = PropertiesManager.getPropertiesManager();
 
@@ -336,18 +329,14 @@ public class AppFileController {
             HTMLTagPrototype selectedTag = selectedItem.getValue();
             
             // GET THE FIRST TAG IN FROM THE ARRAYLIST
-            HTMLTagPrototype newTag = temp_tagsList.get(0).clone(); 
+            HTMLTagPrototype newTag = tempTreeItem.getValue();
             
             //CHECK IF THE FIRST TAG IS A LEGAL PARENT
-            if (newTag.isLegalParent(selectedTag.getTagName())) {            
-                for (int i = 0; i < temp_tagsList.size(); i++) {
-                    // MAKE A NEW HTMLTagPrototype AND PUT IT IN A NODE
-                    newTag = temp_tagsList.get(i).clone();
-                    TreeItem<HTMLTagPrototype> newNode = new TreeItem<>(newTag);
-                    selectedItem.getChildren().add(newNode);
-                    tree.getSelectionModel().select(newNode);
-                } //endFor
-                
+            if (newTag.isLegalParent(selectedTag.getTagName())) {   
+                TreeItem<HTMLTagPrototype> newNode = clone(tempTreeItem);
+                selectedItem.getChildren().add(newNode);
+                tree.getSelectionModel().select(newNode);
+   
                 // SELECT THE NEW NODE
 		selectedItem.setExpanded(true);
 
@@ -356,6 +345,7 @@ public class AppFileController {
 		workspace.reloadWorkspace(data);
 
 		workspace.refreshTagButtons();
+                
 		try {
 		    WTFiles fileManager = (WTFiles) app.getFileComponent();
 		    fileManager.exportData(data, TEMP_PAGE);
@@ -363,8 +353,12 @@ public class AppFileController {
 		    // AN ERROR HAPPENED WRITING TO THE TEMP FILE, NOTIFY THE USER    
 		    AppMessageDialogSingleton dialog = AppMessageDialogSingleton.getSingleton();
 		    dialog.show(props.getProperty(ADD_ELEMENT_ERROR_TITLE), props.getProperty(ADD_ELEMENT_ERROR_MESSAGE));
-		} //endTryCatch
-            } //endIf
+		} //endTryCatch 
+            } else {
+                // AN ERROR HAPPENED WRITING TO THE TEMP FILE, NOTIFY THE USER    
+		AppMessageDialogSingleton dialog = AppMessageDialogSingleton.getSingleton();
+		dialog.show(props.getProperty(ILLEGAL_NODE_PASTE_ERROR_TITLE), props.getProperty(ILLEGAL_NODE_PASTE_ERROR_MESSAGE));
+            }
         } //endIf    
     }
 
@@ -492,5 +486,19 @@ public class AppFileController {
      */
     public boolean isSaved() {
         return saved;
+    }
+    
+        /**
+     * Clone method for getting a copy of TreeItem
+     * since it was last edited.
+     *
+     * @return true if the current work is saved to the file, false otherwise.
+     */
+    public TreeItem<HTMLTagPrototype> clone(TreeItem<HTMLTagPrototype> item) {
+        TreeItem<HTMLTagPrototype> copy = new TreeItem<HTMLTagPrototype>(item.getValue());
+        for (TreeItem<HTMLTagPrototype> child : item.getChildren()) {
+            copy.getChildren().add(clone(child));
+        } //endFor
+        return copy; 
     }
 }
