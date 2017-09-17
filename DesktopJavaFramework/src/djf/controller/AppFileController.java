@@ -33,6 +33,8 @@ import java.util.ArrayList;
 import javafx.scene.control.Button;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.TreeItem;
+import static wt.LanguageProperty.ADD_ELEMENT_ERROR_MESSAGE;
+import static wt.LanguageProperty.ADD_ELEMENT_ERROR_TITLE;
 import static wt.LanguageProperty.ILLEGAL_NODE_REMOVAL_ERROR_MESSAGE;
 import static wt.LanguageProperty.ILLEGAL_NODE_REMOVAL_ERROR_TITLE;
 import static wt.LanguageProperty.ILLEGAL_NODE_CUT_ERROR_TITLE;
@@ -47,6 +49,8 @@ import static wt.data.HTMLTagPrototype.TAG_HTML;
 import static wt.data.HTMLTagPrototype.TAG_LINK;
 import static wt.data.HTMLTagPrototype.TAG_TITLE;
 import wt.data.WTData;
+import wt.file.WTFiles;
+import static wt.file.WTFiles.TEMP_PAGE;
 import wt.gui.WTWorkspace;
 /**
  * This class provides the event programmed responses for the file controls
@@ -257,10 +261,10 @@ public class AppFileController {
         // GET THE TREE TO SEE WHICH NODE IS CURRENTLY SELECTED
         TreeView<HTMLTagPrototype> tree = workspace.getHTMLTree();
         TreeItem<HTMLTagPrototype> selectedItem = tree.getSelectionModel().getSelectedItem();
-        String tagName = selectedItem.getValue().getTagName();
         
         // CHECK IF SELECTED ITEM EXISTED AND IT'S NOT HEAD/TITLE/LINK/BODY
-        if (selectedItem != null)  
+        if (selectedItem != null){ 
+            String tagName = selectedItem.getValue().getTagName();
             if (tagName.equals(TAG_HTML)
 		    || tagName.equals(TAG_HEAD)
 		    || tagName.equals(TAG_TITLE)
@@ -286,18 +290,82 @@ public class AppFileController {
                 AppDataComponent data = app.getDataComponent();
 		workspace.reloadWorkspace(data);
                 workspace.refreshTagButtons();
-            } //endElse    
+            } //endElse 
+        } //endIf    
     }
     
     public void hanldeCopyRequest() {
-        System.out.println("Copy");
+        WTWorkspace workspace = (WTWorkspace) app.getWorkspaceComponent();
+        PropertiesManager props = PropertiesManager.getPropertiesManager();
+        
+        // GET THE TREE TO SEE WHICH NODE IS CURRENTLY SELECTED
+        TreeView<HTMLTagPrototype> tree = workspace.getHTMLTree();
+        TreeItem<HTMLTagPrototype> selectedItem = tree.getSelectionModel().getSelectedItem();
+       
+        // CHECK IF SELECTED ITEM EXISTED AND IT'S NOT HEAD/TITLE/LINK/BODY
+        if (selectedItem != null){ 
+            String tagName = selectedItem.getValue().getTagName();
+            if (tagName.equals(TAG_HTML)
+		    || tagName.equals(TAG_HEAD)
+		    || tagName.equals(TAG_TITLE)
+		    || tagName.equals(TAG_LINK)
+		    || tagName.equals(TAG_BODY)) {
+                AppMessageDialogSingleton dialog = AppMessageDialogSingleton.getSingleton();
+		dialog.show(props.getProperty(ILLEGAL_NODE_CUT_ERROR_TITLE), props.getProperty(ILLEGAL_NODE_CUT_ERROR_MESSAGE));
+            } else {
+                temp_tagsList = new ArrayList<HTMLTagPrototype>();
+                temp_tagsList.add(selectedItem.getValue());
+                
+                for (int i = 0; i < selectedItem.getChildren().size(); i++) {
+                   HTMLTagPrototype tagChildren = (HTMLTagPrototype)selectedItem.getChildren().get(i).getValue();
+                   temp_tagsList.add(tagChildren);
+                } //endFor
+            } //endElse 
+        } //endIf
     }
     
     public void handlePasteRequest() {
-        System.out.println("Paste");  
-         // MAKE A NEW HTMLTagPrototype AND PUT IT IN A NODE
-	    //HTMLTagPrototype newTag = element.clone();
-	    //TreeItem<HTMLTagPrototype> newNode = new TreeItem<>(newTag);
+        
+        if(temp_tagsList != null){
+            WTWorkspace workspace = (WTWorkspace) app.getWorkspaceComponent();
+            PropertiesManager props = PropertiesManager.getPropertiesManager();
+
+            // GET THE TREE TO SEE WHICH NODE IS CURRENTLY SELECTED
+            TreeView<HTMLTagPrototype> tree = workspace.getHTMLTree();
+            TreeItem<HTMLTagPrototype> selectedItem = tree.getSelectionModel().getSelectedItem(); 
+            HTMLTagPrototype selectedTag = selectedItem.getValue();
+            
+            // GET THE FIRST TAG IN FROM THE ARRAYLIST
+            HTMLTagPrototype newTag = temp_tagsList.get(0).clone(); 
+            
+            //CHECK IF THE FIRST TAG IS A LEGAL PARENT
+            if (newTag.isLegalParent(selectedTag.getTagName())) {            
+                for (int i = 0; i < temp_tagsList.size(); i++) {
+                    // MAKE A NEW HTMLTagPrototype AND PUT IT IN A NODE
+                    newTag = temp_tagsList.get(i).clone();
+                    TreeItem<HTMLTagPrototype> newNode = new TreeItem<>(newTag);
+                    selectedItem.getChildren().add(newNode);
+                    tree.getSelectionModel().select(newNode);
+                } //endFor
+                
+                // SELECT THE NEW NODE
+		selectedItem.setExpanded(true);
+
+		// FORCE A RELOAD OF TAG EDITOR
+                AppDataComponent data = app.getDataComponent();
+		workspace.reloadWorkspace(data);
+
+		workspace.refreshTagButtons();
+		try {
+		    WTFiles fileManager = (WTFiles) app.getFileComponent();
+		    fileManager.exportData(data, TEMP_PAGE);
+		} catch (IOException ioe) {
+		    // AN ERROR HAPPENED WRITING TO THE TEMP FILE, NOTIFY THE USER    
+		    AppMessageDialogSingleton dialog = AppMessageDialogSingleton.getSingleton();
+		    dialog.show(props.getProperty(ADD_ELEMENT_ERROR_TITLE), props.getProperty(ADD_ELEMENT_ERROR_MESSAGE));
+		} //endTryCatch
+            } //endIf
+        } //endIf    
     }
 
     /**
