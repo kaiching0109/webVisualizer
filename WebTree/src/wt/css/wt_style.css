@@ -34,7 +34,7 @@
 
 /* CSS CLASS FOR OUR BIG PANES */
 .bordered_pane {
-    -fx-background-color: #7151B0;
+    -fx-background-color: #5d2457;
     -fx-background-radius: 1.0;
     -fx-padding: 15;
     -fx-spacing: 10;

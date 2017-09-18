@@ -2,9 +2,23 @@ package wt.data;
 
 import djf.AppTemplate;
 import djf.components.AppDataComponent;
+import djf.ui.AppMessageDialogSingleton;
+import java.io.IOException;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 import javafx.scene.control.TreeItem;
+import javax.json.Json;
+import javax.json.JsonObject;
+import javax.json.JsonReader;
+import javax.json.JsonWriter;
+import javax.json.JsonWriterFactory;
+import javax.json.stream.JsonGenerator;
+import properties_manager.PropertiesManager;
+import static wt.LanguageProperty.TAG_LOADING_ERROR_MESSAGE;
+import static wt.LanguageProperty.TAG_LOADING_ERROR_TITLE;
 import static wt.data.HTMLTagPrototype.ATT_HREF;
 import static wt.data.HTMLTagPrototype.ATT_REL;
 import static wt.data.HTMLTagPrototype.ATT_TYPE;
@@ -62,6 +76,30 @@ public class WTData implements AppDataComponent {
 
 	// NOW LOAD ALL THE TAGS WE'LL USE
 	WTFiles fileManager = (WTFiles) app.getFileComponent();
+        StringWriter sw = new StringWriter();
+        // CHECK IF JSON FILE IS NICELY FORMAT
+        /*
+        try{
+            JsonReader jr = Json.createReader(new StringReader(TAG_TYPES_FILE_PATH));
+
+            JsonObject jobj = jr.readObject();
+
+            Map<String, Object> properties = new HashMap<>(1);
+            properties.put(JsonGenerator.PRETTY_PRINTING, true);
+
+
+            JsonWriterFactory writerFactory = Json.createWriterFactory(properties);
+            JsonWriter jsonWriter = writerFactory.createWriter(sw);
+
+            jsonWriter.writeObject(jobj);
+            jsonWriter.close();
+            
+	}catch(Exception e) {
+            AppMessageDialogSingleton dialog = AppMessageDialogSingleton.getSingleton();
+            PropertiesManager props = PropertiesManager.getPropertiesManager();
+            dialog.show(props.getProperty(TAG_LOADING_ERROR_TITLE), props.getProperty(TAG_LOADING_ERROR_MESSAGE));
+        }
+        */
 	fileManager.loadHTMLTags(this, TAG_TYPES_FILE_PATH);
     }
     

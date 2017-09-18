@@ -68,7 +68,7 @@ public class WTWorkspace extends AppWorkspaceComponent {
     static final String CLASS_TAG_BUTTON = "tag_button";
     static final String EMPTY_TEXT = "";
     static final int BUTTON_TAG_WIDTH = 75;
-    static final int BUTTON_TAG_HEIGHT = 5;
+    //static final int BUTTON_TAG_HEIGHT = 5;
     
     // HERE'S THE APP
     private final AppTemplate app;
@@ -162,9 +162,9 @@ public class WTWorkspace extends AppWorkspaceComponent {
 	removeButton.setMaxWidth(BUTTON_TAG_WIDTH);
 	removeButton.setMinWidth(BUTTON_TAG_WIDTH);
 	removeButton.setPrefWidth(BUTTON_TAG_WIDTH);
-        removeButton.setMaxHeight(BUTTON_TAG_HEIGHT);
-        removeButton.setMinWidth(BUTTON_TAG_HEIGHT);
-        removeButton.setPrefHeight(BUTTON_TAG_HEIGHT);
+        //removeButton.setMaxHeight(BUTTON_TAG_HEIGHT);
+        //removeButton.setMinWidth(BUTTON_TAG_HEIGHT);
+        //removeButton.setPrefHeight(BUTTON_TAG_HEIGHT);
 
 	// LOAD ALL THE HTML TAG TYPES
 	WTFiles fileManager = (WTFiles) app.getFileComponent();
@@ -182,7 +182,6 @@ public class WTWorkspace extends AppWorkspaceComponent {
 	dataManager.resetData();
         
         int counter = 0;
-        //tagToolbar.getChildren().add(hBox);
         
 	// AND NOW USE THE LOADED TAG TYPES TO ADD BUTTONS
 	for (HTMLTagPrototype tag : dataManager.getTags()) {
@@ -202,6 +201,7 @@ public class WTWorkspace extends AppWorkspaceComponent {
 	}   
         editHBox.getChildren().addAll(editVBox1, editVBox2);
         tagToolbar.getChildren().add(editHBox);
+        
 	// AND NOW THE REGION FOR EDITING TAG PROPERTIES
 	tagEditorPane = new GridPane();
 	tagEditorScrollPane = new ScrollPane(tagEditorPane);
@@ -285,11 +285,12 @@ public class WTWorkspace extends AppWorkspaceComponent {
         for (int i = 0; i < editVBox1.getChildren().size(); i++) {
             Button tagButton = (Button)editVBox1.getChildren().get(i);
             WTData data = (WTData)app.getDataComponent();
-	    // INIT ITS EVENT HANDLER
+	    // ITS EVENT HANDLER
 	    tagButton.setOnAction(e -> {
 		String tagName = tagButton.getText();
 		HTMLTagPrototype clickedTag = data.getTag(tagName);
 		pageEditController.handleAddElementRequest(clickedTag);
+                app.getGUI().updateToolbarControls(false);
 	    });
         }
         
@@ -301,6 +302,8 @@ public class WTWorkspace extends AppWorkspaceComponent {
 		String tagName = tagButton.getText();
 		HTMLTagPrototype clickedTag = data.getTag(tagName);
 		pageEditController.handleAddElementRequest(clickedTag);
+                app.getGUI().updateToolbarControls(false);
+                
 	    });
         }
             
@@ -391,7 +394,7 @@ public class WTWorkspace extends AppWorkspaceComponent {
 	    tagEditorPane.getChildren().clear();
 
 	    // FIRST ADD THE LABEL
-	   tagEditorPane.add(tagEditorLabel, 0, 3, 2, 1);
+	   tagEditorPane.add(tagEditorLabel, 0, 0, 2, 1);
 
 	    // THEN LOAD IN ALL THE NEW STUFF
 	    TreeItem<HTMLTagPrototype> selectedItem = htmlTree.getSelectionModel().getSelectedItem();
