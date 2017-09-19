@@ -36,6 +36,8 @@
 
         <property name="TAG_LOADING_ERROR_MESSAGE"      value="Error loading HTML Tags"></property>
         <property name="TAG_LOADING_ERROR_TITLE"        value="Tag Loading Error"></property>
+        <property name="JSON_LOADING_ERROR_MESSAGE"      value="Error loading JSON"></property>
+        <property name="JSON_LOADING_ERROR_TITLE"        value="JSON Loading Error"></property>
         <property name="NEW_ERROR_MESSAGE"              value="An error occured creating New work."></property>
         <property name="NEW_ERROR_TITLE"		value="New Work Error"></property>
         <property name="LOAD_ERROR_MESSAGE"             value="An error occured loading work."></property>

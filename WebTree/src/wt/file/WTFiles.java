@@ -29,10 +29,13 @@ import javax.json.stream.JsonGenerator;
 import properties_manager.PropertiesManager;
 import static wt.LanguageProperty.TAG_LOADING_ERROR_MESSAGE;
 import static wt.LanguageProperty.TAG_LOADING_ERROR_TITLE;
+import static wt.LanguageProperty.JSON_LOADING_ERROR_MESSAGE;
+import static wt.LanguageProperty.JSON_LOADING_ERROR_TITLE;
 import wt.data.WTData;
 import wt.data.HTMLTagPrototype;
 import static wt.data.HTMLTagPrototype.TAG_TEXT;
 import static wt.file.WTFiles.JSON_TAG_NAME;
+import javax.json.JsonException;
 
 /**
  * This class serves as the file management component for this application,
@@ -411,41 +414,45 @@ public class WTFiles implements AppFileComponent {
      */
     public void loadHTMLTags(WTData data, String filePath) {
         try {
-    	// LOAD THE JSON FILE WITH ALL THE DATA
-    	JsonObject json = loadJSONFile(filePath);
-	
-	// GET THE ARRAY
-	JsonArray tagsArray = json.getJsonArray(JSON_TAGS_ARRAY_NAME);	
-	
-	// AND LOAD ALL THE ITEMS IN
-	for (int i = 0; i < tagsArray.size(); i++) {
-	    JsonObject tagJSO = tagsArray.getJsonObject(i);
-	    String tagName = tagJSO.getString(JSON_TAG_NAME);
-	    String tagHasClosingTag = tagJSO.getString(JSON_TAG_HAS_CLOSING_TAG);
-	    boolean hasClosingTag = Boolean.parseBoolean(tagHasClosingTag);
-	    HTMLTagPrototype tag = new HTMLTagPrototype(tagName, hasClosingTag);
-	    
-	    // NOW GET ALL THE TAG ATTRIBUTES THAT CAN BE EDITED
-	    JsonArray attributesArray = tagJSO.getJsonArray(JSON_TAG_ATTRIBUTES);
-	    for (int j = 0; j < attributesArray.size(); j++) {
-		String attribute = attributesArray.getString(j);
-		tag.addAttribute(attribute, DEFAULT_ATTRIBUTE_VALUE);
-	    }
+            // LOAD THE JSON FILE WITH ALL THE DATA
+            JsonObject json = loadJSONFile(filePath);
 
-	    // AND NOW GET THE LEGAL PARENTS
-	    JsonArray legalParentsArray = tagJSO.getJsonArray(JSON_TAG_LEGAL_PARENTS);
-	    for (int k = 0; k < legalParentsArray.size(); k++) {
-		String legalParent = legalParentsArray.getString(k);
-		tag.addLegalParent(legalParent);
-	    }
-	    
-	    // NOW GIVE THE LOADED TAG TO THE DATA MANAGER
-	    data.addTag(tag);
+            // GET THE ARRAY
+            JsonArray tagsArray = json.getJsonArray(JSON_TAGS_ARRAY_NAME);	
+
+            // AND LOAD ALL THE ITEMS IN
+            for (int i = 0; i < tagsArray.size(); i++) {
+                JsonObject tagJSO = tagsArray.getJsonObject(i);
+                String tagName = tagJSO.getString(JSON_TAG_NAME);
+                String tagHasClosingTag = tagJSO.getString(JSON_TAG_HAS_CLOSING_TAG);
+                boolean hasClosingTag = Boolean.parseBoolean(tagHasClosingTag);
+                HTMLTagPrototype tag = new HTMLTagPrototype(tagName, hasClosingTag);
+
+                // NOW GET ALL THE TAG ATTRIBUTES THAT CAN BE EDITED
+                JsonArray attributesArray = tagJSO.getJsonArray(JSON_TAG_ATTRIBUTES);
+                for (int j = 0; j < attributesArray.size(); j++) {
+                    String attribute = attributesArray.getString(j);
+                    tag.addAttribute(attribute, DEFAULT_ATTRIBUTE_VALUE);
+                }
+
+                // AND NOW GET THE LEGAL PARENTS
+                JsonArray legalParentsArray = tagJSO.getJsonArray(JSON_TAG_LEGAL_PARENTS);
+                for (int k = 0; k < legalParentsArray.size(); k++) {
+                    String legalParent = legalParentsArray.getString(k);
+                    tag.addLegalParent(legalParent);
+                }
+
+                // NOW GIVE THE LOADED TAG TO THE DATA MANAGER
+                data.addTag(tag);
         }
 	}catch(IOException ioe) {
             AppMessageDialogSingleton dialog = AppMessageDialogSingleton.getSingleton();
             PropertiesManager props = PropertiesManager.getPropertiesManager();
             dialog.show(props.getProperty(TAG_LOADING_ERROR_TITLE), props.getProperty(TAG_LOADING_ERROR_MESSAGE));
+        }catch(JsonException e){
+            AppMessageDialogSingleton dialog = AppMessageDialogSingleton.getSingleton();
+            PropertiesManager props = PropertiesManager.getPropertiesManager();
+            dialog.show(props.getProperty(JSON_LOADING_ERROR_TITLE), props.getProperty(JSON_LOADING_ERROR_MESSAGE));
         }
     }
     
