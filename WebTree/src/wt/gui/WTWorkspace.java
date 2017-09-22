@@ -166,10 +166,7 @@ public class WTWorkspace extends AppWorkspaceComponent {
 	removeButton.setMaxWidth(BUTTON_TAG_WIDTH);
 	removeButton.setMinWidth(BUTTON_TAG_WIDTH);
 	removeButton.setPrefWidth(BUTTON_TAG_WIDTH);
-        //removeButton.setMaxHeight(BUTTON_TAG_HEIGHT);
-        //removeButton.setMinWidth(BUTTON_TAG_HEIGHT);
-        //removeButton.setPrefHeight(BUTTON_TAG_HEIGHT);
-
+        
 	// LOAD ALL THE HTML TAG TYPES
 	WTFiles fileManager = (WTFiles) app.getFileComponent();
 	WTData dataManager = (WTData) app.getDataComponent();
@@ -200,8 +197,7 @@ public class WTWorkspace extends AppWorkspaceComponent {
             if(counter < 11)
                 editVBox1.getChildren().add(tagButton);
             else    
-                editVBox2.getChildren().add(tagButton); 
-	   // tagToolbar.getChildren().add(tagButton);          
+                editVBox2.getChildren().add(tagButton);           
 	}   
         editHBox.getChildren().addAll(editVBox1, editVBox2);
         tagToolbar.getChildren().add(editHBox);
@@ -515,12 +511,10 @@ public class WTWorkspace extends AppWorkspaceComponent {
         return selectedText;
     }
     
-    public void replaceString(){       
-        cssEditor.setText(cssEditor.getText().replace(cssEditor.getSelectedText(),""));
-    }
-    
-    public void replaceString(String text){
-        cssEditor.appendText(text);
+    public TextArea getCSSEditor(){
+        
+        return cssEditor;
+        
     }
     
 }

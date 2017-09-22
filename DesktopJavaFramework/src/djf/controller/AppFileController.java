@@ -34,6 +34,7 @@ import java.util.HashMap;
 import javafx.scene.control.Button;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.TreeItem;
+import javafx.scene.web.WebEngine;
 import static wt.LanguageProperty.ADD_ELEMENT_ERROR_MESSAGE;
 import static wt.LanguageProperty.ADD_ELEMENT_ERROR_TITLE;
 import static wt.LanguageProperty.ILLEGAL_NODE_REMOVAL_ERROR_MESSAGE;
@@ -274,8 +275,7 @@ public class AppFileController {
     public void handleCutRequest_CSS(){
         tempTreeItem = null;
         WTWorkspace workspace = (WTWorkspace) app.getWorkspaceComponent();
-        selectedText = workspace.getSelectedText();
-        workspace.replaceString();
+        workspace.getCSSEditor().cut();
   
     }
     
@@ -318,11 +318,15 @@ public class AppFileController {
     }
     
     public void hanldeCopyRequest() {
+        /*
         WTWorkspace workspace = (WTWorkspace) app.getWorkspaceComponent();
         if(workspace.getOnCSSEditor())
             handleCopyRequest_CSS();   
         else
             handleCopyRequest_HTML();
+        */
+        WTWorkspace workspace = (WTWorkspace) app.getWorkspaceComponent();
+        workspace.getCSSEditor().copy();
     }
     
     public void handleCopyRequest_CSS(){
@@ -364,16 +368,11 @@ public class AppFileController {
             handlePasteRequest_CSS();   
         else
             handlePasteRequest_HTML();
-       
     }
     
     public void handlePasteRequest_CSS(){
-        
-        if(selectedText != null){
-            WTWorkspace workspace = (WTWorkspace) app.getWorkspaceComponent();
-            workspace.replaceString(selectedText);
-            app.getGUI().updateToolbarControls(false);
-        }
+        WTWorkspace workspace = (WTWorkspace) app.getWorkspaceComponent();
+        workspace.getCSSEditor().paste();
     }
     
     public void handlePasteRequest_HTML(){
