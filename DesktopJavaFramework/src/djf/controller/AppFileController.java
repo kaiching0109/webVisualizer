@@ -558,13 +558,10 @@ public class AppFileController {
         attributes = item.getValue().getAttributes();
         HTMLTagPrototype tag = item.getValue().clone();
         tag.addAttributes(attributes);
-       // tag.addAttribute(, item.getValue().getAttribute(item.getValue().getTagName()));
         TreeItem<HTMLTagPrototype> copy = new TreeItem<HTMLTagPrototype>(tag);
         
         for (TreeItem<HTMLTagPrototype> child :  item.getChildren()) {
-            copy.getChildren().add(clone(child));  
-          // String attribute = item.getValue().getAttribute(item.getValue().toString());
-            
+            copy.getChildren().add(clone(child));        
         } //endFor
         return copy; 
     }

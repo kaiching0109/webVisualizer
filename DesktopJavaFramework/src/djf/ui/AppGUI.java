@@ -88,7 +88,7 @@ public class AppGUI {
         
         // INIT THE STYLESHEET AND THE STYLE FOR THE FILE TOOLBAR
         initStylesheet(app);
-        initFileToolbarStyle();        
+        initFileToolbarStyle(); 
     }
     
     /**
@@ -156,12 +156,20 @@ public class AppGUI {
 	newButton.setDisable(false);
         loadButton.setDisable(false);
 	exitButton.setDisable(false);
-        cutButton.setDisable(false);
-        copyButton.setDisable(false);
-        pasteButton.setDisable(false);
+        cutButton.setDisable(true);
+        copyButton.setDisable(true);
+        pasteButton.setDisable(true);
 
         // NOTE THAT THE NEW, LOAD, AND EXIT BUTTONS
         // ARE NEVER DISABLED SO WE NEVER HAVE TO TOUCH THEM
+    }
+    
+    public void updateToolbarCopyCutPasteButtons(Boolean bool){
+        
+        cutButton.setDisable(bool);
+        copyButton.setDisable(bool); 
+        pasteButton.setDisable(bool); 
+        
     }
 
     /****************************************************************************/

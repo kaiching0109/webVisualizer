@@ -100,7 +100,7 @@ public abstract class AppTemplate extends Application {
                 // IT WOULD BE DEFINED IN AN APPLICATION-SPECIFIC
                 // CHILD CLASS
 		buildAppComponentsHook();
-                
+                gui.updateToolbarCopyCutPasteButtons(true);
                 // NOW OPEN UP THE WINDOW
                 primaryStage.show();
 	    } 

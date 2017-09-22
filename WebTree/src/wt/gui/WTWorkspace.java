@@ -316,30 +316,17 @@ public class WTWorkspace extends AppWorkspaceComponent {
         cssEditor.setOnMouseClicked(e -> {
             onCSSEditor = true;
             onTreeEditor = false;
+            app.getGUI().updateToolbarCopyCutPasteButtons(false);
             selectedText = cssEditor.getSelectedText();
+            
         });
         
         htmlTree.setOnMouseClicked(e -> {
             onCSSEditor = false;
-            onTreeEditor = true;       
+            onTreeEditor = true;     
+            app.getGUI().updateToolbarCopyCutPasteButtons(false);
         });
-        
-        /*
-        tagToolbar.setOnMouseClicked( e -> { 
-            onCSSEditor = false;
-            onTreeEditor = false;
-        });
-        
-        tagEditorPane.setOnMouseClicked( e -> { 
-            onCSSEditor = false;
-            onTreeEditor = false;
-        });
-        
-        tagEditorPane.setOnMouseClicked( e -> { 
-            onCSSEditor = false;
-            onTreeEditor = false;
-        });
-        */
+                
     }
 
     /**
