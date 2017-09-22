@@ -45,6 +45,7 @@ import static wt.LanguageProperty.ILLEGAL_NODE_COPY_ERROR_MESSAGE;
 import static wt.LanguageProperty.ILLEGAL_NODE_PASTE_ERROR_TITLE;
 import static wt.LanguageProperty.ILLEGAL_NODE_PASTE_ERROR_MESSAGE;
 import wt.gui.WTWorkspace;
+import wt.gui.WTController;
 import wt.data.HTMLTagPrototype;
 import static wt.data.HTMLTagPrototype.TAG_BODY;
 import static wt.data.HTMLTagPrototype.TAG_HEAD;
@@ -76,6 +77,7 @@ public class AppFileController {
     ArrayList<HTMLTagPrototype> temp_tagsList;
     TreeItem<HTMLTagPrototype> tempTreeItem;
     HashMap<String, String> attributes;
+    String selectedText;
 
     /**
      * This constructor just keeps the app for later.
@@ -259,7 +261,27 @@ public class AppFileController {
         }
     }
     
-    public void handleCutRequest() {   
+    public void handleCutRequest() { 
+       app.getGUI().updateToolbarControls(false);
+       WTWorkspace workspace = (WTWorkspace) app.getWorkspaceComponent();
+        if(workspace.getOnCSSEditor())
+            handleCutRequest_CSS();   
+        else
+            handleCutRequest_HTML();
+        
+    }
+    
+    public void handleCutRequest_CSS(){
+        tempTreeItem = null;
+        WTWorkspace workspace = (WTWorkspace) app.getWorkspaceComponent();
+        selectedText = workspace.getSelectedText();
+        workspace.replaceString();
+  
+    }
+    
+    public void handleCutRequest_HTML(){
+        
+        selectedText = null;
         WTWorkspace workspace = (WTWorkspace) app.getWorkspaceComponent();
         PropertiesManager props = PropertiesManager.getPropertiesManager();
         
@@ -292,10 +314,26 @@ public class AppFileController {
                 workspace.refreshTagButtons();
             } //endElse 
         } //endIf    
+        
     }
     
     public void hanldeCopyRequest() {
-            WTWorkspace workspace = (WTWorkspace) app.getWorkspaceComponent();
+        WTWorkspace workspace = (WTWorkspace) app.getWorkspaceComponent();
+        if(workspace.getOnCSSEditor())
+            handleCopyRequest_CSS();   
+        else
+            handleCopyRequest_HTML();
+    }
+    
+    public void handleCopyRequest_CSS(){
+        tempTreeItem = null;
+        WTWorkspace workspace = (WTWorkspace) app.getWorkspaceComponent();
+        selectedText = workspace.getSelectedText();
+    }
+    
+    public void handleCopyRequest_HTML(){
+        
+        WTWorkspace workspace = (WTWorkspace) app.getWorkspaceComponent();
         PropertiesManager props = PropertiesManager.getPropertiesManager();
         
         // GET THE TREE TO SEE WHICH NODE IS CURRENTLY SELECTED
@@ -317,11 +355,30 @@ public class AppFileController {
                 tempTreeItem = clone(selectedItem);
             } //endElse 
         } //endIf    
+        
     }
     
     public void handlePasteRequest() {
+         WTWorkspace workspace = (WTWorkspace) app.getWorkspaceComponent();
+        if(workspace.getOnCSSEditor())
+            handlePasteRequest_CSS();   
+        else
+            handlePasteRequest_HTML();
+       
+    }
+    
+    public void handlePasteRequest_CSS(){
         
-        if(tempTreeItem != null){
+        if(selectedText != null){
+            WTWorkspace workspace = (WTWorkspace) app.getWorkspaceComponent();
+            workspace.replaceString(selectedText);
+            app.getGUI().updateToolbarControls(false);
+        }
+    }
+    
+    public void handlePasteRequest_HTML(){
+        
+         if(tempTreeItem != null){
             WTWorkspace workspace = (WTWorkspace) app.getWorkspaceComponent();
             PropertiesManager props = PropertiesManager.getPropertiesManager();
 
@@ -362,8 +419,9 @@ public class AppFileController {
 		dialog.show(props.getProperty(ILLEGAL_NODE_PASTE_ERROR_TITLE), props.getProperty(ILLEGAL_NODE_PASTE_ERROR_MESSAGE));
             }
         } //endIf    
+        
     }
-
+    
     /**
      * This helper method verifies that the user really wants to save their
      * unsaved work, which they might not want to do. Note that it could be used

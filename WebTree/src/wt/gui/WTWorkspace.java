@@ -113,6 +113,10 @@ public class WTWorkspace extends AppWorkspaceComponent {
     private WebEngine htmlEngine;
     private TextArea cssEditor;
 
+    private Boolean onCSSEditor = false;
+    private Boolean onTreeEditor = false;
+    
+    private String selectedText;
     /**
      * Constructor for initializing the workspace, note that this constructor
      * will fully setup the workspace user interface for use.
@@ -311,6 +315,35 @@ public class WTWorkspace extends AppWorkspaceComponent {
 	cssEditor.textProperty().addListener(e -> {
 	    pageEditController.handleCSSEditing(cssEditor.getText());
 	});
+        
+        // SETUP THE RESPONSE TO CSS TEXT SELECTING
+        cssEditor.setOnMouseClicked(e -> {
+            onCSSEditor = true;
+            onTreeEditor = false;
+            selectedText = cssEditor.getSelectedText();
+        });
+        
+        htmlTree.setOnMouseClicked(e -> {
+            onCSSEditor = false;
+            onTreeEditor = true;       
+        });
+        
+        /*
+        tagToolbar.setOnMouseClicked( e -> { 
+            onCSSEditor = false;
+            onTreeEditor = false;
+        });
+        
+        tagEditorPane.setOnMouseClicked( e -> { 
+            onCSSEditor = false;
+            onTreeEditor = false;
+        });
+        
+        tagEditorPane.setOnMouseClicked( e -> { 
+            onCSSEditor = false;
+            onTreeEditor = false;
+        });
+        */
     }
 
     /**
@@ -469,4 +502,25 @@ public class WTWorkspace extends AppWorkspaceComponent {
 	    }
 	}
     }
+    
+    public boolean getOnCSSEditor() {
+        return onCSSEditor;
+    }
+       
+    public boolean getOnTreeEditor(){
+        return onTreeEditor;
+    }
+    
+    public String getSelectedText(){
+        return selectedText;
+    }
+    
+    public void replaceString(){       
+        cssEditor.setText(cssEditor.getText().replace(cssEditor.getSelectedText(),""));
+    }
+    
+    public void replaceString(String text){
+        cssEditor.appendText(text);
+    }
+    
 }
