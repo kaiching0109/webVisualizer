@@ -134,7 +134,15 @@ public class HTMLTagPrototype implements Comparable<HTMLTagPrototype>, Cloneable
      * @param value The value for the attribute to add.
      */
     public void addAttribute(String name, String value) {
+        System.out.println(name);
+        System.out.println(value);
         attributes.put(name, value);
+    }
+    
+    public void addAttributes(HashMap<String, String> copy){
+        
+        attributes.putAll(copy);
+        
     }
 
     /**

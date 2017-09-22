@@ -30,6 +30,7 @@ import static djf.settings.AppPropertyType.SAVE_WORK_TITLE;
 import static djf.settings.AppStartupConstants.PATH_WORK;
 import static djf.settings.AppStartupConstants.PROPERTIES_SCHEMA_FILE_NAME;
 import java.util.ArrayList;
+import java.util.HashMap;
 import javafx.scene.control.Button;
 import javafx.scene.control.TreeView;
 import javafx.scene.control.TreeItem;
@@ -74,6 +75,7 @@ public class AppFileController {
     // THIS IS A TEMP VARIABLE TO STORE TAGS FOR USER COPYING/CUTTING ITEMS
     ArrayList<HTMLTagPrototype> temp_tagsList;
     TreeItem<HTMLTagPrototype> tempTreeItem;
+    HashMap<String, String> attributes;
 
     /**
      * This constructor just keeps the app for later.
@@ -311,7 +313,7 @@ public class AppFileController {
                 AppMessageDialogSingleton dialog = AppMessageDialogSingleton.getSingleton();
 		dialog.show(props.getProperty(ILLEGAL_NODE_COPY_ERROR_TITLE), props.getProperty(ILLEGAL_NODE_COPY_ERROR_MESSAGE));
             } else {
-                tempTreeItem = new TreeItem<HTMLTagPrototype>();
+                tempTreeItem = new TreeItem<HTMLTagPrototype>();           
                 tempTreeItem = clone(selectedItem);
             } //endElse 
         } //endIf    
@@ -495,9 +497,17 @@ public class AppFileController {
      * @return true if the current work is saved to the file, false otherwise.
      */
     public TreeItem<HTMLTagPrototype> clone(TreeItem<HTMLTagPrototype> item) {
-        TreeItem<HTMLTagPrototype> copy = new TreeItem<HTMLTagPrototype>(item.getValue());
-        for (TreeItem<HTMLTagPrototype> child : item.getChildren()) {
-            copy.getChildren().add(clone(child));
+       
+        attributes = item.getValue().getAttributes();
+        HTMLTagPrototype tag = item.getValue().clone();
+        tag.addAttributes(attributes);
+       // tag.addAttribute(, item.getValue().getAttribute(item.getValue().getTagName()));
+        TreeItem<HTMLTagPrototype> copy = new TreeItem<HTMLTagPrototype>(tag);
+        
+        for (TreeItem<HTMLTagPrototype> child :  item.getChildren()) {
+            copy.getChildren().add(clone(child));  
+          // String attribute = item.getValue().getAttribute(item.getValue().toString());
+            
         } //endFor
         return copy; 
     }
